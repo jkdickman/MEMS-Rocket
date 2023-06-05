@@ -1,9 +1,0 @@
-%All inputs to the flight sim
-%maybe also create a plot of the diagram of a rocket
-
-length = 3; 
-mass = 4; 
-
-flightSim = sim("FlightSim.slx");
-output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
-disp(output1)

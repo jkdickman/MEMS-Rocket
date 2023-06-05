@@ -3,6 +3,8 @@
 
 %assumptions: subsonic flight, trapezoidal fins, wind is negligble,assume
 %only 4 components, nosecone, cylinderical body, canards, and fins
+%relatively small angles of attack (FOR open rocket, line 253 of
+%BarrowmanCalculator.java, 17.5 is defined for threshold of warning, altho 10 is prob best)
 
 
 
