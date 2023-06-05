@@ -16,8 +16,6 @@
 %1) sin(AOA)/AOA will be indeterminate at AOA = 0. Thus, follow wut open
 %rocket does, and check the AOA variable ( make its value 1 if AOA < 0.001)
 %2) when user defines fin, probably best to define it using 4 points? 
-    %yeah this is best, and also can derive all pertinent fin values (Like
-    %MAC length, Mac radial position, etc. from that) 
 
 
 
