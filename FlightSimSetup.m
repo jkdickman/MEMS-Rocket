@@ -10,7 +10,10 @@
 
 %potential sources of error: 
 %1) position x is defined relative to what (aerodynamic pitch/Cp section) I assume nose cone but not sure?
-
+%2) Some values (like Renolds num) need magnitude of velocity, make sure
+%that is correctly implemented
+%3) assumed wetted area of rocket body is Diamter *L? not sure but idk wut
+%else to do
 
 %notes
 %1) sin(AOA)/AOA will be indeterminate at AOA = 0. Thus, follow wut open
