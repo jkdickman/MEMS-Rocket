@@ -14,6 +14,10 @@
 %that is correctly implemented
 %3) assumed wetted area of rocket body is Diamter *L? not sure but idk wut
 %else to do
+%4) some equaition implementation is different from open rocket code and my
+%code (even tho i follow the equations they listed in their document). an
+%example is multiplying pitch damping by 3, and not including N when
+%calculating fin damping. Also signs of dampning are different....
 
 %notes
 %1) sin(AOA)/AOA will be indeterminate at AOA = 0. Thus, follow wut open
@@ -24,11 +28,18 @@
 
 
 
-%All inputs to the flight sim
-%maybe also create a plot of the diagram of a rocket
+%All inputs to the flight sim (non fin geometry related)
 length = 3; 
 mass = 4; 
 
-flightSim = sim("FlightSim.slx");
-output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
-disp(output1)
+
+
+run('finParameters.m')
+
+% 
+% flightSim = sim("FlightSim.slx");
+% output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
+% disp(output1)
+
+
+
