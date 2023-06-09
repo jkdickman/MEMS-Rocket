@@ -6,10 +6,14 @@
 %back implies closer to base
 
 %Inputs
-P_frontRoot = [0;10];
-P_backRoot = [0;5];
-P_frontTrail = [2;6];
-P_backTrail =[2;4];
+P_frontRoot = [0;15/100];
+P_backRoot = [0;5/100];
+P_frontTrail = [10/100;8/100];
+P_backTrail =[10/100;3/100];
+
+finLeadingEdgeNoseConeDistance = 45/100; %same value as the one in FlightSimSetup
+bodyDiameter = 5/100; 
+finLeadingEdgeCGxlength = (45-42/5)/100; 
 
 %General calculations
 finRootChord = abs(P_frontRoot(2)-P_backRoot(2));
@@ -18,6 +22,10 @@ finX_t = P_frontRoot(2) - P_frontTrail(2);
 finSpan = abs(P_frontTrail(1)- P_frontRoot(1)); 
 finArea = (finRootChord+finTailChord)*finSpan/2; %pretty sure this is also planform area
 
+frontSweepAngleRefVector1 = [1;0];
+frontSweepAngleRefVector2 = P_frontTrail-P_frontRoot;
+frontSweepAngle = acos(dot(frontSweepAngleRefVector1, frontSweepAngleRefVector2) / (norm(frontSweepAngleRefVector1) * norm(frontSweepAngleRefVector2)));
+
 
 %Chord related calculations
 P_halfChordRoot = (P_frontRoot+P_backRoot)/2;
@@ -25,8 +33,9 @@ P_halfChordTrail = (P_frontTrail+P_backTrail)/2;
 
 midChordAngleRefVector1 = [1;0];
 midChordAngleRefVector2 = P_halfChordTrail-P_halfChordRoot;
-
 finMidChordSweepAngle = acos(dot(midChordAngleRefVector1, midChordAngleRefVector2) / (norm(midChordAngleRefVector1) * norm(midChordAngleRefVector2)));
+
+
 
 %Mean Aerodynamic Chord (MAC) Calculations. Based on Open Rocket equations
 %3.30-3.32. Simplifications of these expressions for trapezoids can be found
@@ -42,23 +51,27 @@ chordLength  = @(x) ( leadingEdgeCoefficients(1)-trailingEdgeCoefficients(1) )*x
 chordLengthFunction = @(x) (chordLength(x)).^2;
 finMACLength = integral(chordLengthFunction, 0, finSpan)/finArea;
 
+axialDistanceMACNosecone = finLeadingEdgeNoseConeDistance + 1/2*finMACLength; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
+
 %calculate MacSpanwise position f(x) = x*c(x)
 chordLengthFunction = @(x) (chordLength(x)).*x;
 finMACSpanwisePosition = integral(chordLengthFunction, 0, finSpan)/finArea;
+radialMACPosition = finMACSpanwisePosition + bodyDiameter/2; 
+
 
 %calculate MAC effective Leading Edge location f(x) = X_le(x)*c(x) 
 leadingEdgePosition = @(x) leadingEdgeCoefficients(1)*x; %relative to top if leading edge (the P_frontRoot point)
 finMACLeadingEdgeLocationFunction = @(x) leadingEdgePosition(x).*chordLength(x); 
 
 %IMPORTANT note, this value is negative, but should be positive realtive to
-%nosecone (since further from nosecone)
-finMACLeadingEdgeLocation = integral(finMACLeadingEdgeLocationFunction, 0, finSpan)/finArea;
- 
+%nosecone (since further from nosecone), hence the abs() function
+finMACLeadingEdgeLocation = abs( integral(finMACLeadingEdgeLocationFunction, 0, finSpan)/finArea ) ;
+axialDistanceMACCGx = abs(finMACLeadingEdgeLocation) + finLeadingEdgeCGxlength;
 
 
 
 
-plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
+%plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
 
 
 function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail, finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation)
@@ -77,8 +90,9 @@ function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_hal
     % plot( [P_backRoot(1),P_frontTrail(1)], [P_backRoot(2) - (P_frontTrail(2)-P_backTrail(2)),P_frontTrail(2)+ (P_frontRoot(2)-P_backRoot(2))])
 
     %MAC plotting
-    plot([finMACSpanwisePosition,finMACSpanwisePosition], [finMACLeadingEdgeLocation+P_frontRoot(2),finMACLeadingEdgeLocation+P_frontRoot(2)-finMACLength])
+    plot([finMACSpanwisePosition,finMACSpanwisePosition], [-finMACLeadingEdgeLocation+P_frontRoot(2),-finMACLeadingEdgeLocation+P_frontRoot(2)-finMACLength])
     grid on
+    axis equal
  
 end 
 

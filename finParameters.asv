@@ -8,8 +8,10 @@
 %Inputs
 P_frontRoot = [0;10];
 P_backRoot = [0;5];
-P_frontTrail = [2;6];
+P_frontTrail = [2;7];
 P_backTrail =[2;4];
+finLeadingEdgeNoseConeDistance = ; %same value as the one in FlightSimSetup
+bodyDiameter = ; 
 
 %General calculations
 finRootChord = abs(P_frontRoot(2)-P_backRoot(2));
@@ -42,9 +44,13 @@ chordLength  = @(x) ( leadingEdgeCoefficients(1)-trailingEdgeCoefficients(1) )*x
 chordLengthFunction = @(x) (chordLength(x)).^2;
 finMACLength = integral(chordLengthFunction, 0, finSpan)/finArea;
 
+axialDistanceMACNosecone = finLeadingEdgeNoseConeDistance + 1/2*finMACLength; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
+
 %calculate MacSpanwise position f(x) = x*c(x)
 chordLengthFunction = @(x) (chordLength(x)).*x;
 finMACSpanwisePosition = integral(chordLengthFunction, 0, finSpan)/finArea;
+radialMACPosition = finMACSpanwisePosition + bodyDiameter/2; 
+
 
 %calculate MAC effective Leading Edge location f(x) = X_le(x)*c(x) 
 leadingEdgePosition = @(x) leadingEdgeCoefficients(1)*x; %relative to top if leading edge (the P_frontRoot point)
@@ -53,7 +59,7 @@ finMACLeadingEdgeLocationFunction = @(x) leadingEdgePosition(x).*chordLength(x);
 %IMPORTANT note, this value is negative, but should be positive realtive to
 %nosecone (since further from nosecone)
 finMACLeadingEdgeLocation = integral(finMACLeadingEdgeLocationFunction, 0, finSpan)/finArea;
- 
+
 
 
 
@@ -70,7 +76,7 @@ function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_hal
     plot( [P_halfChordRoot(1),P_halfChordTrail(1)], [P_halfChordRoot(2),P_halfChordTrail(2)])
 
     %quarter Chord Plotting
-    plot( P_frontRoot(1)+     ) 
+    plot( [P_frontRoot(1), P_frontTrail(1)], [P_frontRoot(2)- (P_frontRoot(2)-P_backRoot(2))/4, P_frontTrail(2)-(P_frontTrail(2)-P_backTrail(2))/4]) 
 
     %plots cross sections for MAC Span purposes
     % plot( [P_frontRoot(1),P_backTrail(1)], [P_frontRoot(2) + (P_frontTrail(2)-P_backTrail(2)),P_backTrail(2)- (P_frontRoot(2)-P_backRoot(2))])
@@ -79,6 +85,7 @@ function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_hal
     %MAC plotting
     plot([finMACSpanwisePosition,finMACSpanwisePosition], [finMACLeadingEdgeLocation+P_frontRoot(2),finMACLeadingEdgeLocation+P_frontRoot(2)-finMACLength])
     grid on
+    axis equal
  
 end 
 
