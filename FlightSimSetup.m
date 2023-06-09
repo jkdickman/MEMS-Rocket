@@ -34,7 +34,9 @@
 % 1) inindividual CP interpolation form .5-2, 
 %2) the AOA = 0 case (testing the switch statements)
 %3) straight drag to axial drag conversion
-%) test different fin numbers
+%) test different fin numbers (roll angle affects pitch in the less than 3
+%case)
+%) 
 
 %atmopshere inputs
     airKinematicViscosity= 1.48*10^-5; 
@@ -83,7 +85,7 @@
     %Compare at time t=1.417 (test values)
     rocketVelocityMag = 103.715; 
     machNum = .300;
-    AOA = deg2rad(6); 
+    AOA = deg2rad(8); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
@@ -95,6 +97,7 @@
 % flightSim = sim("FlightSim.slx");
 % output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
 % disp(output1)
+
 
 
 
