@@ -5,6 +5,8 @@
 %while tail is the opposite end. Front implies closer to nosecone, while
 %back implies closer to base
 
+
+
 %Inputs
 P_frontRoot = [0;15/100];
 P_backRoot = [0;5/100];
@@ -24,7 +26,7 @@ finArea = (finRootChord+finTailChord)*finSpan/2; %pretty sure this is also planf
 
 frontSweepAngleRefVector1 = [1;0];
 frontSweepAngleRefVector2 = P_frontTrail-P_frontRoot;
-frontSweepAngle = acos(dot(frontSweepAngleRefVector1, frontSweepAngleRefVector2) / (norm(frontSweepAngleRefVector1) * norm(frontSweepAngleRefVector2)));
+finFrontSweepAngle = acos(dot(frontSweepAngleRefVector1, frontSweepAngleRefVector2) / (norm(frontSweepAngleRefVector1) * norm(frontSweepAngleRefVector2)));
 
 
 %Chord related calculations
@@ -71,7 +73,7 @@ axialDistanceMACCGx = abs(finMACLeadingEdgeLocation) + finLeadingEdgeCGxlength;
 
 
 
-plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
+%plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
 
 
 function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail, finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation)

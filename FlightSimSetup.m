@@ -1,3 +1,5 @@
+clear; clc
+
 %Note, all methodology originated from Open rocket's implementation, and
 %based on their thesis/source code
 
@@ -56,10 +58,8 @@
 
 %fin (non geometry)
     finThickness = 0.3/100; 
-    %Define a variable (finProfileType) which can be either 0 or 1. 
-    % 0 implies the leading and trailing edge profiles are rounded, 
-    % while 1 implies the leading and trailing edges are rectangular
-    finProfileType = 1; 
+    %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
+    finProfileType = 2; 
     finCount = 4; 
     finCantAngle = 0; 
 
@@ -84,7 +84,7 @@
 %Variables of State
     %Compare at time t=1.417 (test values)
     rocketVelocityMag = 103.715; 
-    machNum = .300;
+    machNum =.89;
     AOA = deg2rad(8); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
