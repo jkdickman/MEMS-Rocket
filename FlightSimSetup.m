@@ -50,7 +50,7 @@ clear; clc
 %rocket body inputs
     bodyLength = 0.4; 
     bodyDiameter = 0.05; 
-    bodyRoughness = 60*10^-5;%based on Table 3.2 Open Rocket
+    bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
 
 %fin geometry
     finLeadingEdgeNoseConeDistance = 45/100; 
@@ -59,7 +59,7 @@ clear; clc
 %fin (non geometry)
     finThickness = 0.3/100; 
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
-    finProfileType = 2; 
+    finProfileType = 3; 
     finCount = 4; 
     finCantAngle = 0; 
 
@@ -81,11 +81,11 @@ clear; clc
     launchLugInnerDiameter = .8/100; 
 
 
-%Variables of State
-    %Compare at time t=1.417 (test values)
-    rocketVelocityMag = 103.715; 
-    machNum =.89;
-    AOA = deg2rad(8); 
+%Variables of state
+    machNum =.3;
+    rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
+
+    AOA = deg2rad(0.6); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
