@@ -8,10 +8,17 @@
 
 
 %Inputs
-P_frontRoot = [0;15/100];
-P_backRoot = [0;5/100];
-P_frontTrail = [10/100;8/100];
-P_backTrail =[10/100;3/100];
+ % P_frontRoot = [0;208/1000];
+ % P_backRoot = [0;0/1000];
+ % P_frontTrail = [140/1000;68/1000];
+ % P_backTrail =[140/1000;0/1000];
+
+   P_frontRoot = [0;15/100];
+  P_backRoot = [0;5/100];
+  P_frontTrail = [10/100;8/100];
+  P_backTrail =[10/100;3/100];
+
+
 
 finLeadingEdgeNoseConeDistance = 45/100; %same value as the one in FlightSimSetup
 bodyDiameter = 5/100; 
@@ -23,6 +30,7 @@ finTailChord = abs(P_frontTrail(2)-P_backTrail(2));
 finX_t = P_frontRoot(2) - P_frontTrail(2); 
 finSpan = abs(P_frontTrail(1)- P_frontRoot(1)); 
 finArea = (finRootChord+finTailChord)*finSpan/2; %pretty sure this is also planform area
+% finAerodynamicLength = P_frontRoot(2) - P_backTrail(2); %used in fin friction drag calc, i believe should be full fin length
 
 frontSweepAngleRefVector1 = [1;0];
 frontSweepAngleRefVector2 = P_frontTrail-P_frontRoot;
@@ -73,7 +81,7 @@ axialDistanceMACCGx = abs(finMACLeadingEdgeLocation) + finLeadingEdgeCGxlength;
 
 
 
-% plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
+ %plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
 
 
 function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail, finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation)

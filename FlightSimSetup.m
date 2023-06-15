@@ -44,12 +44,13 @@ clear; clc
     airKinematicViscosity= 1.48*10^-5; 
     airDensity =1.2250 ; 
 %Full rocket inputs
-    rocketLength = 57/100;
+    rocketLength = 57/100; %nosecone+body+fin(length of fin that extends past base of body)
     CGAxialPosition = 42.5/100;%center of gravity, relative to NOSECONE
 
 %rocket body inputs
     bodyLength = 0.4; 
     bodyDiameter = 0.05; 
+
     bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
 
 %fin geometry
@@ -58,6 +59,7 @@ clear; clc
 
 %fin (non geometry)
     finThickness = 0.3/100; 
+
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
     finProfileType = 3; 
     finCount = 4; 
@@ -73,7 +75,9 @@ clear; clc
     % (assumed 0 if no joint angle). 
     noseConeType = 8; 
     noseConeJoinAngle = pi/2 - atan(noseConeHeight/(bodyDiameter/2));
-    noseConeWettedArea =0.0139; 
+
+    %equation for wetter area of nosecone
+    noseConeWettedArea = pi*sqrt( (bodyDiameter/2)^2 + noseConeHeight^2)*bodyDiameter/2;
     noseConePlanformArea = (1/2)*bodyDiameter* noseConeHeight; %assume for trangle for sim test 1
 %Launch Lug
     launchLugLength = 3/100; 
@@ -82,15 +86,15 @@ clear; clc
 
 
 %Variables of state
-    machNum =.3;
+    machNum =.01;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(0.6); 
+    AOA = deg2rad(0); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
-    rollAngle = 0.0029; 
-    rollRate = 0.012; 
+    rollAngle = 0; 
+    rollRate = 0; 
 
 
 % 
