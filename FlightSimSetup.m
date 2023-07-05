@@ -96,13 +96,14 @@
     machNum =.3;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(0); 
+    AOA = deg2rad(2); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
     % rollAngle = 0; 
     windAngle = 0; 
     rollRate = 0; 
+    cYaw =0 %one of those idk variables 
 
 
 % 

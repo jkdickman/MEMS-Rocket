@@ -13,10 +13,16 @@
   % P_frontTrail = [140/1000;68/1000];
   % P_backTrail =[140/1000;0/1000];
   % 
-   P_frontRoot = [0;15/100];
+    %default open rocket fin setup
+  P_frontRoot = [0;10/100];
   P_backRoot = [0;5/100];
-  P_frontTrail = [10/100;8/100];
-  P_backTrail =[10/100;3/100];
+  P_frontTrail = [3/100;7.5/100];
+  P_backTrail =[3/100;2.5/100];
+
+  %  P_frontRoot = [0;15/100];
+  % P_backRoot = [0;5/100];
+  % P_frontTrail = [10/100;8/100];
+  % P_backTrail =[10/100;3/100];
 
 
 %General setup values
