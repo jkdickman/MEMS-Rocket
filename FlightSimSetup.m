@@ -4,7 +4,7 @@
 %based on their thesis/source code
 
 %assumptions: subsonic flight, trapezoidal fins , wind is negligble,assume
-%only 4 components, nosecone, cylinderical body, canards, and fins (only 3
+%only 4 components, nosecone (ogive or conical), cylinderical body, canards, and fins (only 3
 %or 4)
 %relatively small angles of attack (FOR open rocket, line 253 of
 %BarrowmanCalculator.java, 17.5 is defined for threshold of warning, altho 10 is prob best)
@@ -49,16 +49,18 @@
     CGAxialPosition = 39.4/100;%center of gravity, relative to NOSECONE
 
 %rocket body inputs
-    bodyLength = 0.3; 
+    bodyLength = 0.4; 
     bodyDiameter = 0.05;
     refArea = bodyDiameter^2*pi/4;
     bodyPlanformArea = bodyDiameter*bodyLength; 
     bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
-    cgx = 0;  %radial position of Center of gravity (i think)
+    cgx = 0;  %radial position of Center of gravity (i think), prob not but in sim its always 0
 
 %nosecone
     noseConeHeight = .15; 
-    noseConeVolume = (1/3)*noseConeHeight*(bodyDiameter/2)^2*pi; %assuming cone for now
+    param = 1; 
+    noseConeThickness = 0.002; 
+
 
     %defined a variable with numeric inputs.  
     % 1 -7 correspond with the shapes Figure 3.11 Open rocket doc)
@@ -68,10 +70,8 @@
     noseConeJoinAngle = pi/2 - atan(noseConeHeight/(bodyDiameter/2));
 
     %equation for wetter area of nosecone
-    noseConeWettedArea = pi*sqrt( (bodyDiameter/2)^2 + noseConeHeight^2)*bodyDiameter/2;
-    noseConePlanformArea = (1/2)*bodyDiameter* noseConeHeight; %assume for trangle for sim test 1
-
-
+    noseConeParameters(); 
+   
  
     
 %fin geometry

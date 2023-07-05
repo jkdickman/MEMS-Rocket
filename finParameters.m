@@ -8,21 +8,21 @@
 
 
 %Inputs
-  P_frontRoot = [0;208/1000];
-  P_backRoot = [0;0/1000];
-  P_frontTrail = [140/1000;68/1000];
-  P_backTrail =[140/1000;0/1000];
+  % P_frontRoot = [0;208/1000];
+  % P_backRoot = [0;0/1000];
+  % P_frontTrail = [140/1000;68/1000];
+  % P_backTrail =[140/1000;0/1000];
   % 
-  %  P_frontRoot = [0;15/100];
-  % P_backRoot = [0;5/100];
-  % P_frontTrail = [10/100;8/100];
-  % P_backTrail =[10/100;3/100];
+   P_frontRoot = [0;15/100];
+  P_backRoot = [0;5/100];
+  P_frontTrail = [10/100;8/100];
+  P_backTrail =[10/100;3/100];
 
 
 %General setup values
-bodyLength = 0.3; 
-noseConeHeight = .15; 
-bodyDiameter = 5/100; 
+% bodyLength = 0.4; 
+% noseConeHeight = .15; 
+% bodyDiameter = 5/100; 
 finLeadingEdgeCGxlength = (45-42/5)/100; 
 
 %General calculations
