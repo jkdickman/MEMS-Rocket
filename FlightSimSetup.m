@@ -1,10 +1,11 @@
-clear; clc
+ clear; clc
 
 %Note, all methodology originated from Open rocket's implementation, and
 %based on their thesis/source code
 
 %assumptions: subsonic flight, trapezoidal fins , wind is negligble,assume
-%only 4 components, nosecone, cylinderical body, canards, and fins
+%only 4 components, nosecone, cylinderical body, canards, and fins (only 3
+%or 4)
 %relatively small angles of attack (FOR open rocket, line 253 of
 %BarrowmanCalculator.java, 17.5 is defined for threshold of warning, altho 10 is prob best)
 
@@ -45,25 +46,15 @@ clear; clc
     airDensity =1.2250 ; 
 %Full rocket inputs
     rocketLength = 57/100; %nosecone+body+fin(length of fin that extends past base of body)
-    CGAxialPosition = 42.5/100;%center of gravity, relative to NOSECONE
+    CGAxialPosition = 39.4/100;%center of gravity, relative to NOSECONE
 
 %rocket body inputs
-    bodyLength = 0.4; 
-    bodyDiameter = 0.05; 
-
+    bodyLength = 0.3; 
+    bodyDiameter = 0.05;
+    refArea = bodyDiameter^2*pi/4;
+    bodyPlanformArea = bodyDiameter*bodyLength; 
     bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
-
-%fin geometry
-    finLeadingEdgeNoseConeDistance = 45/100; 
-    run('finParameters.m') %input 4 points which define trapezoidal fin
-
-%fin (non geometry)
-    finThickness = 0.3/100; 
-
-    %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
-    finProfileType = 3; 
-    finCount = 4; 
-    finCantAngle = 0; 
+    cgx = 0;  %radial position of Center of gravity (i think)
 
 %nosecone
     noseConeHeight = .15; 
@@ -79,21 +70,38 @@ clear; clc
     %equation for wetter area of nosecone
     noseConeWettedArea = pi*sqrt( (bodyDiameter/2)^2 + noseConeHeight^2)*bodyDiameter/2;
     noseConePlanformArea = (1/2)*bodyDiameter* noseConeHeight; %assume for trangle for sim test 1
+
+
+ 
+    
+%fin geometry
+    run('finParameters.m'); %input 4 points which define trapezoidal fin
+
+%fin (non geometry)
+    finThickness = 0.3/100; 
+
+    %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
+    finProfileType = 3; 
+    finCount = 3; 
+    finCantAngle = 0; 
+
 %Launch Lug
     launchLugLength = 3/100; 
     launchLugOuterDiameter = 1/100; 
     launchLugInnerDiameter = .8/100; 
 
+     
 
 %Variables of state
-    machNum =.01;
+    machNum =.3;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
     AOA = deg2rad(0); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
-    rollAngle = 0; 
+    % rollAngle = 0; 
+    windAngle = 0; 
     rollRate = 0; 
 
 

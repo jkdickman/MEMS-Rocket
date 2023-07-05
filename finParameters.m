@@ -8,19 +8,20 @@
 
 
 %Inputs
- % P_frontRoot = [0;208/1000];
- % P_backRoot = [0;0/1000];
- % P_frontTrail = [140/1000;68/1000];
- % P_backTrail =[140/1000;0/1000];
+  P_frontRoot = [0;208/1000];
+  P_backRoot = [0;0/1000];
+  P_frontTrail = [140/1000;68/1000];
+  P_backTrail =[140/1000;0/1000];
+  % 
+  %  P_frontRoot = [0;15/100];
+  % P_backRoot = [0;5/100];
+  % P_frontTrail = [10/100;8/100];
+  % P_backTrail =[10/100;3/100];
 
-   P_frontRoot = [0;15/100];
-  P_backRoot = [0;5/100];
-  P_frontTrail = [10/100;8/100];
-  P_backTrail =[10/100;3/100];
 
-
-
-finLeadingEdgeNoseConeDistance = 45/100; %same value as the one in FlightSimSetup
+%General setup values
+bodyLength = 0.3; 
+noseConeHeight = .15; 
 bodyDiameter = 5/100; 
 finLeadingEdgeCGxlength = (45-42/5)/100; 
 
@@ -61,8 +62,6 @@ chordLength  = @(x) ( leadingEdgeCoefficients(1)-trailingEdgeCoefficients(1) )*x
 chordLengthFunction = @(x) (chordLength(x)).^2;
 finMACLength = integral(chordLengthFunction, 0, finSpan)/finArea;
 
-axialDistanceMACNosecone = finLeadingEdgeNoseConeDistance + 1/2*finMACLength; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
-
 %calculate MacSpanwise position f(x) = x*c(x)
 chordLengthFunction = @(x) (chordLength(x)).*x;
 finMACSpanwisePosition = integral(chordLengthFunction, 0, finSpan)/finArea;
@@ -75,13 +74,17 @@ finMACLeadingEdgeLocationFunction = @(x) leadingEdgePosition(x).*chordLength(x);
 
 %IMPORTANT note, this value is negative, but should be positive realtive to
 %nosecone (since further from nosecone), hence the abs() function
+%iirc, distance from top root point of fin to intersection of MAC and
+%leading edge
 finMACLeadingEdgeLocation = abs( integral(finMACLeadingEdgeLocationFunction, 0, finSpan)/finArea ) ;
 axialDistanceMACCGx = abs(finMACLeadingEdgeLocation) + finLeadingEdgeCGxlength;
 
+%Distance from MAC middle to nosecone
+finLeadingEdgeNoseConeDistance = bodyLength + noseConeHeight - finRootChord; %distance from leading edge to noseCone, used for fin CP, (same thing as finMACNoseconeAxialDistance) 
+finMACNoseconeAxialDistance = finLeadingEdgeNoseConeDistance + finMACLeadingEdgeLocation+ 1/2*finMACLength; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
 
 
-
- %plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
+ % plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
 
 
 function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail, finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation)
