@@ -69,7 +69,7 @@
     noseConeType = 8; 
     noseConeJoinAngle = pi/2 - atan(noseConeHeight/(bodyDiameter/2));
 
-    %equation for wetter area of nosecone
+    %gets values for wet Area, planform Area, and volume
     noseConeParameters(); 
    
  
@@ -83,7 +83,7 @@
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
     finProfileType = 3; 
     finCount = 3; 
-    finCantAngle = 0; 
+    finCantAngle = pi/12; 
 
 %Launch Lug
     launchLugLength = 3/100; 
@@ -96,14 +96,14 @@
     machNum =.3;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(2); 
+    AOA = deg2rad(0); 
     pitchRate = -3.513;   %rate of change of AOA
     yawAngle =  -0.5282; 
     yawRate = -.487; 
     % rollAngle = 0; 
     windAngle = 0; 
-    rollRate = 0; 
-    cYaw =0 %one of those idk variables 
+    rollRate = 33.2; 
+    cYaw =0;  %one of those idk variables 
 
 
 % 
