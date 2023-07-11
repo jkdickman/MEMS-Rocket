@@ -46,11 +46,12 @@
     airDensity =1.2250 ; 
 %Full rocket inputs
     rocketLength = 57/100; %nosecone+body+fin(length of fin that extends past base of body)
-    RocketNonMotorCG = 30/100; %relative to Nosecone, along axial direction
-    RocketNonMotorMass = .10; % in KG
+    initialRocketNonMotorCG = 30/100; %relative to Nosecone, along axial direction
+    initialRocketNonMotorMass = .10; % in KG
 %Motor Inputs
-    initialMotorCG = 45/100; %relative to Nosecone, along axial direction
-    initialMotorMass = 0.2; 
+        initialRocketNonMotorCG = 30/100; %relative to Nosecone, along axial direction
+
+initialMotorMass = 0.5; 
 
 %rocket body inputs
     bodyLength = 0.4; 
@@ -87,7 +88,7 @@
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
     finProfileType = 3; 
     finCount = 3; 
-    finCantAngle = deg2rad(3); 
+    finCantAngle = 0; 
 
 %Launch Lug
     launchLugLength = 3/100; 
@@ -97,10 +98,10 @@
      
 
 %Variables of state
-    machNum =0;
+    machNum =.3;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(0); 
+    AOA = deg2rad(10); 
     pitchRate =0;   %rate of change of AOA
     yawAngle =  0; 
     yawRate = 0; 
@@ -110,15 +111,11 @@
     cYaw =0;  %one of those idk variables 
 
 
-% Sets parameters for blocks in Flight Sum
+% 
+% flightSim = sim("FlightSim.slx");
+% output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
+% disp(output1)
 
-    %Aerodyamics block
-    set_param('FlightSim/AerodynamicsBlock', 'S', num2str(refArea)); %sets ref aera 
-    set_param('FlightSim/AerodynamicsBlock', 'b', num2str(bodyDiameter)); %Sets ref span
-    set_param('FlightSim/AerodynamicsBlock', 'cbar', num2str(bodyDiameter)); %Sets ref Length
-
-    %rotation block: 
-    
 
 
 
