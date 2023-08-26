@@ -3,12 +3,15 @@
 %Note, all methodology originated from Open rocket's implementation, and
 %based on their thesis/source code
 
-%assumptions: subsonic flight, trapezoidal fins , wind is negligble,assume
+%assumptions: subsonic flight (<.8/.9), trapezoidal fins , wind is negligble,assume
 %only 4 components, nosecone (ogive or conical), cylinderical body, canards, and fins (only 3
 %or 4)
 %relatively small angles of attack (FOR open rocket, line 253 of
 %BarrowmanCalculator.java, 17.5 is defined for threshold of warning, altho 10 is prob best)
 
+%Current test motor is: AEROTECH 29MM HP SU DMS MOTOR - G8ST-P
+% https://www.apogeerockets.com/Rocket-Motors/AeroTech-Motors/29mm-Motors-Single-Use/Aerotech-29mm-HP-SU-DMS-Motor-G8ST-P
+%Motor Thrust Curve: https://www.thrustcurve.org/simfiles/60159fcfb94d0e00040a8435/
 
 
 %potential sources of error: 
@@ -46,12 +49,23 @@
     airDensity =1.2250 ; 
 %Full rocket inputs
     rocketLength = 57/100; %nosecone+body+fin(length of fin that extends past base of body)
-    initialRocketNonMotorCG = 30/100; %relative to Nosecone, along axial direction
-    initialRocketNonMotorMass = .10; % in KG
+    rocketNonMotorMass = .30; % in KG
+    rocketNonMotorCg = [.3, 0, 0]; %arbitrary value for now, from base of rocket
+    rocketVector = [rocketLength, 0, 0]; %used to represent rocket as vector in space
+   
 %Motor Inputs
-        initialRocketNonMotorCG = 30/100; %relative to Nosecone, along axial direction
+     initialMotorCG = 45/100; %relative to Nosecone, along axial direction
+     initialMotorMass = 0.2; 
 
-initialMotorMass = 0.5; 
+    %Motor inputs for G8
+    motorInitialPropMass = 83/1000;
+    motorInitialTotalMass = 157/1000; 
+    motorCasingMass = motorInitialTotalMass - motorInitialPropMass; 
+    motorTotalImpulse = 129.9; 
+    motorLength = 156/1000; 
+    motorCg = [motorLength/2, 0,0];
+    %assumes Cg is along middle of rocket, and halfway up the motor (from base), 
+    % same for empty motor (this second assumption is sus)
 
 %rocket body inputs
     bodyLength = 0.4; 
@@ -66,7 +80,6 @@ initialMotorMass = 0.5;
     param = 1; 
     noseConeThickness = 0.002; 
 
-
     %defined a variable with numeric inputs.  
     % 1 -7 correspond with the shapes Figure 3.11 Open rocket doc)
     % 8 means there is a join angle, which is provided separately 
@@ -76,8 +89,6 @@ initialMotorMass = 0.5;
 
     %gets values for wet Area, planform Area, and volume
     noseConeParameters(); 
-   
- 
     
 %fin geometry
     run('finParameters.m'); %input 4 points which define trapezoidal fin
@@ -88,20 +99,19 @@ initialMotorMass = 0.5;
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
     finProfileType = 3; 
     finCount = 3; 
-    finCantAngle = 0; 
+    finCantAngle = deg2rad(0); 
 
 %Launch Lug
     launchLugLength = 3/100; 
     launchLugOuterDiameter = 1/100; 
     launchLugInnerDiameter = .8/100; 
 
-     
-
+    
 %Variables of state
-    machNum =.3;
+    machNum = .7;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(10); 
+    AOA = deg2rad(0); 
     pitchRate =0;   %rate of change of AOA
     yawAngle =  0; 
     yawRate = 0; 
@@ -110,12 +120,35 @@ initialMotorMass = 0.5;
     rollRate = 0; 
     cYaw =0;  %one of those idk variables 
 
+% Sets parameters for blocks in Flight Sum
 
-% 
-% flightSim = sim("FlightSim.slx");
-% output1 = flightSim.yout{1}.Values.Data; %scuffed way to get the data, value in {} is port data
-% disp(output1)
+    % %Aerodyamics block
+    set_param('FlightSim/Forces and Rotations/AerodynamicsBlock', 'S', num2str(refArea)); %sets ref aera 
+    set_param('FlightSim/Forces and Rotations/AerodynamicsBlock', 'b', num2str(bodyDiameter)); %Sets ref span
+    set_param('FlightSim/Forces and Rotations/AerodynamicsBlock', 'cbar', num2str(bodyDiameter)); %Sets ref Length
+
+    %CG Estimate Block
+    CGpath = 'FlightSim/Forces and Rotations/CG Calculations/Body Frame CG/Estimate Center of Gravity'; 
+     set_param(CGpath, 'fmass', num2str(motorInitialTotalMass+rocketNonMotorMass));
+     set_param(CGpath, 'emass', num2str(motorCasingMass+rocketNonMotorMass));
 
 
+    rocketInitalCg = (rocketNonMotorMass*rocketNonMotorCg + motorInitialTotalMass*motorCg)/ (rocketNonMotorMass+motorInitialTotalMass);
+    rocketFinalCg = (rocketNonMotorMass*rocketNonMotorCg + motorCasingMass*motorCg)/ (rocketNonMotorMass+motorCasingMass);
+
+     set_param(CGpath, 'fcg', mat2str(rocketInitalCg'));
+     set_param(CGpath, 'ecg', mat2str(rocketFinalCg'));
+
+    % val = get_param('FlightSim/Forces and Rotations/CG Calculations/Estimate Center of Gravity', 'DataTypeOverride_Compiled');
+    % disp(val)
+
+     %Quaternion Block
+     quaternionPath = 'FlightSim/Forces and Rotations/6DOF (Quaternion)';
+
+     % sets initial rocket CG value (since this value is not origin)
+     set_param(quaternionPath, 'xme_0', mat2str(rocketInitalCg));
+
+    % val = get_param('FlightSim/Forces and Rotations/6DOF (Quaternion)', 'DialogParameters');
+    % disp(val)
 
 
