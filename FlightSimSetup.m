@@ -48,7 +48,7 @@
     airKinematicViscosity= 1.48*10^-5; 
     airDensity =1.2250 ; 
 %Full rocket inputs
-    rocketLength = 57/100; %nosecone+body+fin(length of fin that extends past base of body)
+    rocketLength = (20+6)/100; %nosecone+body+fin(length of fin that extends past base of body)
     rocketNonMotorMass = .30; % in KG
     rocketNonMotorCg = [.3, 0, 0]; %arbitrary value for now, from base of rocket
     rocketVector = [rocketLength, 0, 0]; %used to represent rocket as vector in space
@@ -68,17 +68,17 @@
     % same for empty motor (this second assumption is sus)
 
 %rocket body inputs
-    bodyLength = 0.4; 
-    bodyDiameter = 0.05;
+    bodyLength = 20/100; 
+    bodyDiameter = 2/100;
     refArea = bodyDiameter^2*pi/4;
     bodyPlanformArea = bodyDiameter*bodyLength; 
-    bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
+    bodyRoughness = 1000*10^-6;%based on Table 3.2 Open Rocket
     cgx = 0;  %radial position of Center of gravity (i think), prob not but in sim its always 0
 
 %nosecone
-    noseConeHeight = .15; 
+    noseConeHeight = 6/100; 
     param = 1; 
-    noseConeThickness = 0.002; 
+    noseConeThickness = 0.2/100; 
 
     %defined a variable with numeric inputs.  
     % 1 -7 correspond with the shapes Figure 3.11 Open rocket doc)
@@ -94,24 +94,24 @@
     run('finParameters.m'); %input 4 points which define trapezoidal fin
 
 %fin (non geometry)
-    finThickness = 0.3/100; 
+    finThickness = 0.15/100; 
 
     %finProfileType is a string with 1 of 3 values. 1 for "Round", 2 for "Airfoil", or 3 for "Square".   
     finProfileType = 3; 
-    finCount = 3; 
+    finCount = 4; 
     finCantAngle = deg2rad(0); 
 
 %Launch Lug
-    launchLugLength = 3/100; 
-    launchLugOuterDiameter = 1/100; 
-    launchLugInnerDiameter = .8/100; 
+    launchLugLength = 0; 
+    launchLugOuterDiameter = 0; 
+    launchLugInnerDiameter = 0; 
 
     
 %Variables of state
-    machNum = .7;
+    machNum = .14;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(0); 
+    AOA = deg2rad(17); 
     pitchRate =0;   %rate of change of AOA
     yawAngle =  0; 
     yawRate = 0; 

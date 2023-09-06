@@ -18,18 +18,27 @@
   % P_backRoot = [0;5/100];
   % P_frontTrail = [3/100;7.5/100];
   % P_backTrail =[3/100;2.5/100];
+  % 
+  %  P_frontRoot = [0;15/100];
+  % P_backRoot = [0;5/100];
+  % P_frontTrail = [10/100;8/100];
+  % P_backTrail =[10/100;3/100];
 
-   P_frontRoot = [0;15/100];
-  P_backRoot = [0;5/100];
-  P_frontTrail = [10/100;8/100];
-  P_backTrail =[10/100;3/100];
+
+  P_frontRoot = [0;4.9/100];
+  P_backRoot = [0;.4/100];
+  P_frontTrail = [2/100;2.4/100];
+  P_backTrail =[2/100;.4/100];
+  backOffset = -0.4/100; % difference between rocket base and back root. (if back root further back than base, positive)
 
 
 %General setup values
 % bodyLength = 0.4; 
 % noseConeHeight = .15; 
 % bodyDiameter = 5/100; 
-finLeadingEdgeCGxlength = (45-42/5)/100; 
+% finLeadingEdgeCGxlength = (45-42/5)/100; 
+
+finLeadingEdgeCGxlength = (45-42/5)/100;  %idt this matters
 
 %General calculations
 finRootChord = abs(P_frontRoot(2)-P_backRoot(2));
@@ -86,11 +95,11 @@ finMACLeadingEdgeLocation = abs( integral(finMACLeadingEdgeLocationFunction, 0, 
 axialDistanceMACCGx = abs(finMACLeadingEdgeLocation) + finLeadingEdgeCGxlength;
 
 %Distance from MAC middle to nosecone
-finLeadingEdgeNoseConeDistance = bodyLength + noseConeHeight - finRootChord; %distance from leading edge to noseCone, used for fin CP, (same thing as finMACNoseconeAxialDistance) 
-finMACNoseconeAxialDistance = finLeadingEdgeNoseConeDistance + finMACLeadingEdgeLocation+ 1/2*finMACLength; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
+finLeadingEdgeNoseConeDistance = bodyLength + noseConeHeight - finRootChord + backOffset; %distance from leading edge to noseCone, used for fin CP, (same thing as finMACNoseconeAxialDistance) 
+finMACNoseconeAxialDistance = finLeadingEdgeNoseConeDistance + finMACLeadingEdgeLocation+ 1/2*finMACLength ; %line 225 FinSetCalc.java Openrocket, detemrines fin pitch damping
 
 
- % plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
+   % plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail,finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation);
 
 
 function [] = plotFin (P_frontRoot, P_backRoot, P_frontTrail, P_backTrail, P_halfChordRoot, P_halfChordTrail, finMACLength, finMACSpanwisePosition, finMACLeadingEdgeLocation)

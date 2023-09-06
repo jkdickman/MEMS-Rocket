@@ -38,8 +38,11 @@ function [wetArea, planformArea, volume, fullVolume, cgAxial] = integrate(length
         height = thickness*hyp/deltaLength; 
          if r1< height || r2 < height
              dV = dFullV;
+             inner = 0;  %used for inertia
+
          else 
              dV = max(pi*deltaLength*height*(r1+r2-height), 0);
+             inner = max(outer-height, 0); %used for ineria
          end 
     
          fullVolume = fullVolume + dFullV; 
@@ -48,6 +51,18 @@ function [wetArea, planformArea, volume, fullVolume, cgAxial] = integrate(length
     
          wetArea = wetArea + hyp*(r1+r2); 
          planformArea = planformArea + deltaLength*(r1+r2); 
+
+         %inertia, from Symmetric component 433
+         outer = (r1+r2)/2; 
+         rotationalInertia = dV *(outer.^2 + inner.^2)/2;
+         longitudinalInertia = dV*((1/4*(outer.^2+inner.^2) + 1/12*(deltaLength.^2))+ (deltaLength*(i-1/2)).^2 );
+         %my understanding of equation above, follows form 1/4R^2 + 1/12L^2
+         %for cylinder, and the last term uses parallel axis theorem to
+         %shift to base of nosecone. All values are multiplied by mass at
+         %the end
+
+         %not totally done yet (need to adjust to Cg). 
+
     
          r1 = r2;
     
