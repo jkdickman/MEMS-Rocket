@@ -1,0 +1,28 @@
+
+%Body inertia
+bodyLongitudinalInertia = rocketBodyMass*( ((bodyDiameter/2).^2)/4 + ((bodyLength).^2)/12);
+bodyRotationalInertia = rocketBodyMass*(((bodyDiameter/2).^2)/2); 
+
+%Motor inertia: calcualtes the casing and grain separately
+
+%Motor Inertia: Casing
+    %Shape is hollow sphere, equations here: https://amesweb.info/inertia/hollow-cylinder-moment-of-inertia.aspx
+    motorOuterRadius = motorDiameter/2; 
+    innerMotorRadius = motorOuterRadius - casingThickness; 
+    % 
+    casingRotationalInertia = motorCasingMass/2*(motorOuterRadius.^2+innerMotorRadius.^2);
+    casingLongitudinalInertia = motorCasingMass/12*(3*(motorOuterRadius.^2+innerMotorRadius.^2)+motorLength.^2); 
+
+%motor Inertia: grain
+    %shape is just a cylinder
+    %implementation in simulink, since it changes as mass is lost
+
+%fins
+    %based on open rocket implmenetation, finSet.java line 786
+    length = P_frontRoot(2) - min(P_backRoot(2),P_backTrail(2)); 
+
+    length2 = length * finArea/finSpan
+    width2 = span * finArea/length
+
+
+    

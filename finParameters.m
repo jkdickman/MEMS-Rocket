@@ -25,6 +25,7 @@
   % P_backTrail =[10/100;3/100];
 
 
+  %x axis is span, y axis is height
   P_frontRoot = [0;4.9/100];
   P_backRoot = [0;.4/100];
   P_frontTrail = [2/100;2.4/100];
@@ -47,6 +48,7 @@ finX_t = P_frontRoot(2) - P_frontTrail(2);
 finSpan = abs(P_frontTrail(1)- P_frontRoot(1)); 
 finArea = (finRootChord+finTailChord)*finSpan/2; %pretty sure this is also planform area
 % finAerodynamicLength = P_frontRoot(2) - P_backTrail(2); %used in fin friction drag calc, i believe should be full fin length
+finCentroidAxial = finSpan/3 * ( (finRootChord + 2*finTailChord)/(finRootChord + finTailChord) ) - backOffset; 
 
 frontSweepAngleRefVector1 = [1;0];
 frontSweepAngleRefVector2 = P_frontTrail-P_frontRoot;

@@ -47,38 +47,48 @@
 %atmopshere inputs
     airKinematicViscosity= 1.48*10^-5; 
     airDensity =1.2250 ; 
-%Full rocket inputs
-    rocketLength = (20+6)/100; %nosecone+body+fin(length of fin that extends past base of body)
-    rocketNonMotorMass = .30; % in KG
-    rocketNonMotorCg = [.3, 0, 0]; %arbitrary value for now, from base of rocket
-    rocketVector = [rocketLength, 0, 0]; %used to represent rocket as vector in space
-   
-%Motor Inputs
+
+ %Motor Inputs
      initialMotorCG = 45/100; %relative to Nosecone, along axial direction
      initialMotorMass = 0.2; 
 
-    %Motor inputs for G8
+ %Motor inputs for G8
     motorInitialPropMass = 83/1000;
-    motorInitialTotalMass = 157/1000; 
+    motorInitialTotalMass = 154/1000; 
     motorCasingMass = motorInitialTotalMass - motorInitialPropMass; 
     motorTotalImpulse = 129.9; 
+
     motorLength = 156/1000; 
     motorCg = [motorLength/2, 0,0];
+    motorDiameter = 29/1000; 
+    casingThickness = 3/1000; %arbitrary num rn, used for inertia
+
     %assumes Cg is along middle of rocket, and halfway up the motor (from base), 
     % same for empty motor (this second assumption is sus)
 
-%rocket body inputs
+
+
+%Full rocket inputs
+    rocketLength = (20+6)/100; %nosecone+body+fin(length of fin that extends past base of body)
+    rocketNonMotorCg = [rocketLength - 15.3/100, 0, 0]; %arbitrary value for now, from base of rocket
+    rocketVector = [rocketLength, 0, 0]; %used to represent rocket as vector in space
+    pitchCenterX = 0;  %radial position of Center of gravity (i think), prob not but in open rocket its always 0
+
+    
+ %rocket body inputs
     bodyLength = 20/100; 
     bodyDiameter = 2/100;
     refArea = bodyDiameter^2*pi/4;
     bodyPlanformArea = bodyDiameter*bodyLength; 
-    bodyRoughness = 1000*10^-6;%based on Table 3.2 Open Rocket
-    cgx = 0;  %radial position of Center of gravity (i think), prob not but in sim its always 0
+    bodyRoughness = 60*10^-6;%based on Table 3.2 Open Rocket
+    bodyMass = 12/1000; %arbitrary right now
 
+  
 %nosecone
     noseConeHeight = 6/100; 
     param = 1; 
     noseConeThickness = 0.2/100; 
+    noseConeMass = 5/1000; 
 
     %defined a variable with numeric inputs.  
     % 1 -7 correspond with the shapes Figure 3.11 Open rocket doc)
@@ -87,9 +97,6 @@
     noseConeType = 8; 
     noseConeJoinAngle = pi/2 - atan(noseConeHeight/(bodyDiameter/2));
 
-    %gets values for wet Area, planform Area, and volume
-    noseConeParameters(); 
-    
 %fin geometry
     run('finParameters.m'); %input 4 points which define trapezoidal fin
 
@@ -100,6 +107,22 @@
     finProfileType = 3; 
     finCount = 4; 
     finCantAngle = deg2rad(0); 
+    singleFinMass = 1/1000; 
+    totalFinMass = singleFinMass * finCount; 
+
+
+%center of Gravity
+    rocketNonMotorMass = noseConeMass + bodyMass + totalFinMass; % in KG
+    rocketInitialCg = (rocketNonMotorMass*rocketNonMotorCg + motorInitialTotalMass*motorCg)/ (rocketNonMotorMass+motorInitialTotalMass);
+    rocketFinalCg = (rocketNonMotorMass*rocketNonMotorCg + motorCasingMass*motorCg)/ (rocketNonMotorMass+motorCasingMass);
+
+%noseCone 2.0:  values for wet Area, planform Area, volume, and inertia
+    noseConeParameters(); 
+
+%inertia
+    InertiaParameters(); 
+
+    
 
 %Launch Lug
     launchLugLength = 0; 
@@ -108,10 +131,10 @@
 
     
 %Variables of state
-    machNum = .14;
+    machNum = 0;
     rocketVelocityMag = machNum*340.17;  %340 more accurate at t=20 C
 
-    AOA = deg2rad(17); 
+    AOA = deg2rad(0); 
     pitchRate =0;   %rate of change of AOA
     yawAngle =  0; 
     yawRate = 0; 
@@ -133,10 +156,7 @@
      set_param(CGpath, 'emass', num2str(motorCasingMass+rocketNonMotorMass));
 
 
-    rocketInitalCg = (rocketNonMotorMass*rocketNonMotorCg + motorInitialTotalMass*motorCg)/ (rocketNonMotorMass+motorInitialTotalMass);
-    rocketFinalCg = (rocketNonMotorMass*rocketNonMotorCg + motorCasingMass*motorCg)/ (rocketNonMotorMass+motorCasingMass);
-
-     set_param(CGpath, 'fcg', mat2str(rocketInitalCg'));
+     set_param(CGpath, 'fcg', mat2str(rocketInitialCg'));
      set_param(CGpath, 'ecg', mat2str(rocketFinalCg'));
 
     % val = get_param('FlightSim/Forces and Rotations/CG Calculations/Estimate Center of Gravity', 'DataTypeOverride_Compiled');
@@ -146,7 +166,7 @@
      quaternionPath = 'FlightSim/Forces and Rotations/6DOF (Quaternion)';
 
      % sets initial rocket CG value (since this value is not origin)
-     set_param(quaternionPath, 'xme_0', mat2str(rocketInitalCg));
+     set_param(quaternionPath, 'xme_0', mat2str(rocketInitialCg));
 
     % val = get_param('FlightSim/Forces and Rotations/6DOF (Quaternion)', 'DialogParameters');
     % disp(val)

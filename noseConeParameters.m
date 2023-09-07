@@ -9,18 +9,29 @@ if (param < 0.001)
  noseConePlanformArea = (1/2)*bodyDiameter* noseConeHeight; %assume for trangle for sim test 1
 end
 
-[noseConeWettedArea, noseConePlanformArea, ~, noseConeVolume, ~] = integrate(noseConeHeight, bodyDiameter/2, param, noseConeThickness); 
+%finding distance between nosecone and Cg, used for inertia
+noseConeCgDistance = bodyLength - rocketInitialCg(1); 
 
+%calls function
+[noseConeWettedArea, noseConePlanformArea, ~, noseConeVolume, ~, noseConeRotationalInertia, noseConeLongitudinalInertia] = integrate(noseConeHeight, bodyDiameter/2, param, noseConeThickness, noseConeCgDistance); 
 
+%initial calculations ignored mass until now
+noseConeRotationalInertia = noseConeRotationalInertia*noseConeMass; 
+noseConeLongitudinalInertia = noseConeLongitudinalInertia*noseConeMass; 
 
 %based on integrate function, line 324 of symmetricComponent.java
-function [wetArea, planformArea, volume, fullVolume, cgAxial] = integrate(length,baseRadius, param, thickness)
+function [wetArea, planformArea, volume, fullVolume, cgAxial, rotationalInertia, longitudinalInertia] = integrate(length,baseRadius, param, thickness, inertiaDistance)
+        
+
 %setting intial values, these will be integrated
+
     wetArea = 0; %this will mulitply value by pi
     planformArea = 0;
     volume = 0; 
     fullVolume = 0; 
     cgx = 0; 
+    rotationalInertia = 0; 
+    longitudinalInertia = 0; 
     
     
     divisions = 100; %larger, the more precise. Riemann sum stuff basically
@@ -54,14 +65,13 @@ function [wetArea, planformArea, volume, fullVolume, cgAxial] = integrate(length
 
          %inertia, from Symmetric component 433
          outer = (r1+r2)/2; 
-         rotationalInertia = dV *(outer.^2 + inner.^2)/2;
-         longitudinalInertia = dV*((1/4*(outer.^2+inner.^2) + 1/12*(deltaLength.^2))+ (deltaLength*(i-1/2)).^2 );
+         rotationalInertia = rotationalInertia + dV *(outer.^2 + inner.^2)/2;
+         longitudinalInertia = longitudinalInertia + dV*((1/4*(outer.^2+inner.^2) + 1/12*(deltaLength.^2))+ (deltaLength*(i-1/2)).^2 );
          %my understanding of equation above, follows form 1/4R^2 + 1/12L^2
          %for cylinder, and the last term uses parallel axis theorem to
          %shift to base of nosecone. All values are multiplied by mass at
          %the end
 
-         %not totally done yet (need to adjust to Cg). 
 
     
          r1 = r2;
@@ -70,6 +80,26 @@ function [wetArea, planformArea, volume, fullVolume, cgAxial] = integrate(length
     
         wetArea = wetArea * pi; 
         cgAxial = cgx/volume; 
+
+
+        %inertia
+        rotationalInertia  = rotationalInertia/volume; 
+        longitudinalInertia = longitudinalInertia/volume;
+
+        %adjusts longitudinal inertia to Center of mass
+
+
+
+        %wierdly, in open rocket inertia distance is distance from nosecone
+        %tip to the NOSECONE's Cg, which makes no sense in this case
+        %all values match up except for inertiaDistance (called
+        %getComponentCG().x in openRocket). 
+        
+        % longitudinalInertia = max(longitudinalInertia - inertiaDistance.^2, 0); 
+
+
+        
+
 
 
 
